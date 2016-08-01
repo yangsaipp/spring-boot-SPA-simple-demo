@@ -1,0 +1,96 @@
+buildscript {
+	ext {
+		springBootVersion = '1.3.6.RELEASE'
+	}
+	repositories {
+		jcenter()
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath 'ro.isdc.wro4j.gradle:wro4j-gradle-plugin:1.7.9.Beta2'
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'wro4j'
+apply plugin: 'eclipse'
+apply plugin: 'spring-boot'
+
+jar {
+	baseName = 'demo'
+	version = '0.0.1-SNAPSHOT'
+}
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+	mavenCentral()
+}
+
+
+ext {
+    versionJQuery = '2.1.4'
+    versionBootstrap = '3.3.4'
+    versionJasmine = '2.3.4'
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	webjars 'org.webjars:jquery:2.1.4'
+    webjars 'org.webjars:bootstrap:3.3.4'
+}
+
+webResources {
+	
+	// 将js目录下的js文件压缩合并成core.js
+    bundle ('core') {
+        js 'js/**/*.js'
+        preProcessor 'jsMin'
+    }
+
+	// 将jquery合并成libs.js
+    bundle ('libs') {
+        js "webjars/jquery/$versionJQuery/jquery.min.js"
+    }
+
+	// 编译less、合并css
+    bundle ('theme-default') {
+        css "webjars/bootstrap/$versionBootstrap/less/bootstrap.less"
+        css 'themes/default/main.css'
+
+        cssOverrideImport "variables.less", "../../../../themes/default/variables.less"
+        preProcessor 'less4j'
+        cssRewriteUrl()
+    }
+
+    assets {
+        include 'themes/default/images/**'
+    }
+
+    testAssets {
+        from (srcTestDir) {
+            exclude '*SpecRunner.html'
+            exclude '*.conf.js'
+        }
+
+        from (srcTestDir) {
+            include '*SpecRunner.html'
+            include '*.conf.js'
+
+            expand([
+                'srcMain': buildMainUri,
+                'srcTest': buildTestUri,
+                'webjarJasmine': "$buildTestUri/webjars/jasmine/$versionJasmine"
+            ])
+        }
+    }
+}
+
+eclipse {
+	classpath {
+		 containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+		 containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7'
+	}
+}
