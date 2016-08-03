@@ -4,11 +4,15 @@ buildscript {
 	}
 	repositories {
 		jcenter()
+		maven { url 'http://repo.spring.io/plugins-release' }
 		mavenCentral()
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 		classpath 'ro.isdc.wro4j.gradle:wro4j-gradle-plugin:1.7.9.Beta2'
+		// Provides additional optional and provided dependency configurations for Gradle along with Maven POM generation support.
+		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
+		// classpath 'org.springframework:springloaded:1.2.0.RELEASE'
 	}
 }
 
@@ -16,6 +20,8 @@ apply plugin: 'java'
 apply plugin: 'wro4j'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
+apply plugin: 'propdeps'
+apply plugin: 'propdeps-eclipse'
 
 jar {
 	baseName = 'demo'
@@ -37,6 +43,7 @@ ext {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
+	optional("org.springframework.boot:spring-boot-devtools")	// spring boot hot-swapping
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	webjars 'org.webjars:jquery:2.1.4'
     webjars 'org.webjars:bootstrap:3.3.4'
