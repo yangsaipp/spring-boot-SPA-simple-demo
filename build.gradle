@@ -94,10 +94,26 @@ webResources {
         }
     }
 }
-
+  
 eclipse {
 	classpath {
 		 containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
 		 containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7'
+		 
+		 file {
+//			  设置eclipse中java、resource的output与gradle java插件的output一致，方便eclipse开发调试
+//			  设置如下：
+//			 <classpathentry output="build\classes\main" kind="src" path="src/main/java"/>
+//			 <classpathentry output="build\resources\main" kind="src" path="src/main/resources"/>
+//			 <classpathentry output="build\classes\test" kind="src" path="src/test/java"/>
+			 whenMerged { classpath ->
+			   sourceSets.each {source->
+				   classpath.entries.findAll { entry -> entry.kind == 'src' && source.java.srcDirs.any{ it == entry.dir}}
+				   .collect{entry -> entry.output = relativePath(source.output.classesDir)}
+				   classpath.entries.findAll { entry -> entry.kind == 'src' && source.resources.srcDirs.any{ it == entry.dir }}
+				   .collect{entry -> entry.output = relativePath(source.output.resourcesDir)}
+			   }
+			 }
+		   }
+		 }
 	}
-}
