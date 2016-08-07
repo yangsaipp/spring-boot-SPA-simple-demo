@@ -1,0 +1,19 @@
+<nav>
+    <ol class="cd-multi-steps text-center">
+		<!-- <li class="visited"><a href="#0">购物车</a></li>
+		<li class="visited" ><a href="#0">结算付款</a></li>
+		<li class="current"><em>送货</em></li>
+		<li><em>验货收货</em></li> -->
+        <ng-repeat ng-repeat="resource in resourceSet track by $index + $last">
+        	<li ng-class="{'visited':$index < enableStep || $index == currentStep, 'current': $index == currentStep, 'last': $last}">
+        		<a href="###" ng-if="$index < enableStep && $index != currentStep" ng-click="showResource(resource, $index)">{{resource.name}}</a>
+        		<em ng-if="!($index < enableStep && $index != currentStep)">{{resource.name}}</em>
+        	</li>
+        </ng-repeat>
+    </ol>
+    <div>
+    	<button class="btn" ng-click="preStep()">上一步</button>
+		<button class="btn" ng-click="nextStep()">下一步</button>
+    </div>
+</nav>
+

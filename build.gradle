@@ -62,13 +62,14 @@ webResources {
 	// 将jquery合并成libs.js
     bundle ('libs') {
         js "webjars/jquery/$versionJQuery/jquery.min.js"
-        js "webjars/jquery/$versionAngular/angular.js"
+        js "webjars/angularjs/$versionAngular/angular.js"
     }
 
 	// 编译less、合并css
     bundle ('theme-default') {
         css "webjars/bootstrap/$versionBootstrap/less/bootstrap.less"
-        css 'themes/default/main.css'
+//        css 'themes/default/main.css'
+		css 'themes/default/*.css'
 
         cssOverrideImport "variables.less", "../../../../themes/default/variables.less"
         preProcessor 'less4j'
